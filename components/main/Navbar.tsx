@@ -10,7 +10,7 @@ const Navbar = () => {
           href="#about-me"
           className="h-auto w-auto flex flex-row items-center">
           <Image
-            src="/kshlogo.png"
+            src="/NavLogo.png"
             alt="logo"
             width={50}
             height={50}/>
