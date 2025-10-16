@@ -8,15 +8,12 @@ const Navbar = () => {
       <div className="w-full h-full flex flex-row items-center justify-between m-auto px-[10px]">
         <a
           href="#about-me"
-          className="h-auto w-auto flex flex-row items-center"
-        >
+          className="h-auto w-auto flex flex-row items-center">
           <Image
             src="/kshlogo.png"
             alt="logo"
-            width={60}
-            height={60}
-
-          />
+            width={50}
+            height={50}/>
 
           <span className="font-bold ml-[10px] hidden md:block text-gray-300">
             KyawSwar&apos;s Dev
