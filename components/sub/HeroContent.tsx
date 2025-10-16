@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react"; // 1. Import useCallback
 import { motion } from "framer-motion";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 
-// --- START: FIX for missing "@/utils/motion" ---
-// We are defining the animation variants directly in the component
-// instead of importing them from an external file.
+// --- START: Animation Variants ---
 const slideInFromTop = {
   hidden: { y: -100, opacity: 0 },
   visible: {
@@ -43,7 +41,7 @@ const slideInFromRight = (delay: number) => ({
     },
   },
 });
-// --- END: FIX ---
+// --- END: Animation Variants ---
 
 const HeroContent = () => {
   // --- Animation State for the HEADING ---
@@ -52,7 +50,7 @@ const HeroContent = () => {
   const [hText, setHText] = useState('');
   const [hDelta, setHDelta] = useState(200 - Math.random() * 100);
   const hToRotate = [ "the best", "Creative", "Modern", "Scalable" ];
-  const hPeriod = 2500;
+  const hPeriod = 1000;
 
   // --- Animation State for the PARAGRAPH ---
   const [pLoopNum, setPLoopNum] = useState(0);
@@ -60,25 +58,10 @@ const HeroContent = () => {
   const [pText, setPText] = useState('');
   const [pDelta, setPDelta] = useState(150 - Math.random() * 100);
   const pToRotate = [ "KyawSwar Hein", "A Software Engineer", "Fullstack Web Developer", "UI/UX Designer" ];
-  const pPeriod = 2000;
+  const pPeriod = 1000;
 
-  // --- useEffect for HEADING animation ---
-  useEffect(() => {
-    let ticker = setInterval(() => {
-      hTick();
-    }, hDelta);
-    return () => { clearInterval(ticker) };
-  }, [hText, hDelta]);
-
-  // --- useEffect for PARAGRAPH animation ---
-  useEffect(() => {
-    let ticker = setInterval(() => {
-      pTick();
-    }, pDelta);
-    return () => { clearInterval(ticker) };
-  }, [pText, pDelta]);
-
-  const hTick = () => {
+  // 2. Wrap hTick in useCallback
+  const hTick = useCallback(() => {
     let i = hLoopNum % hToRotate.length;
     let fullText = hToRotate[i];
     let updatedText = hIsDeleting
@@ -99,9 +82,10 @@ const HeroContent = () => {
       setHLoopNum(hLoopNum + 1);
       setHDelta(300);
     }
-  };
+  }, [hIsDeleting, hLoopNum, hText, hToRotate, hPeriod]); // Added dependencies for hTick
 
-  const pTick = () => {
+  // 3. Wrap pTick in useCallback
+  const pTick = useCallback(() => {
     let i = pLoopNum % pToRotate.length;
     let fullText = pToRotate[i];
     let updatedText = pIsDeleting
@@ -122,7 +106,23 @@ const HeroContent = () => {
       setPLoopNum(pLoopNum + 1);
       setPDelta(300);
     }
-  };
+  }, [pIsDeleting, pLoopNum, pText, pToRotate, pPeriod]); // Added dependencies for pTick
+
+  // --- useEffect for HEADING animation ---
+  useEffect(() => {
+    let ticker = setInterval(() => {
+      hTick();
+    }, hDelta);
+    return () => { clearInterval(ticker) };
+  }, [hTick, hDelta]); // 4. Add hTick to the dependency array
+
+  // --- useEffect for PARAGRAPH animation ---
+  useEffect(() => {
+    let ticker = setInterval(() => {
+      pTick();
+    }, pDelta);
+    return () => { clearInterval(ticker) };
+  }, [pTick, pDelta]); // 5. Add pTick to the dependency array
 
   return (
     <motion.div
@@ -162,16 +162,16 @@ const HeroContent = () => {
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-yellow-500 wrap">
             {` ${pText}`}
           </span>,
-           with experience in Website,
+            with experience in Website,
           Mobile, and Software development. Check out my projects and skills.
         </motion.p>
         <motion.a
-  variants={slideInFromLeft(1)}
-  href="mailto:heinkyawswar804@gmail.com"
-  className="py-2 button-primary text-center text-white cursor-pointer rounded-lg max-w-[200px]"
->
-  Request To Download CV
-</motion.a>
+          variants={slideInFromLeft(1)}
+          href="mailto:heinkyawswar804@gmail.com"
+          className="py-2 button-primary text-center text-white cursor-pointer rounded-lg max-w-[200px]"
+        >
+          Request To Download CV
+        </motion.a>
       </div>
 
       <motion.div
@@ -185,10 +185,8 @@ const HeroContent = () => {
           width={650}
         />
       </motion.div>
-      
     </motion.div>
   );
 };
 
 export default HeroContent;
-
