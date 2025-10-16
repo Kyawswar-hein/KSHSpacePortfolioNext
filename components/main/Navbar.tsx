@@ -10,7 +10,7 @@ const Navbar = () => {
           href="#about-me"
           className="h-auto w-auto flex flex-row items-center">
           <Image
-            src="/NavLogo.png"
+            src="/male-programmer.svg"
             alt="logo"
             width={50}
             height={50}/>
