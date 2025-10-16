@@ -11,10 +11,10 @@ const Navbar = () => {
           className="h-auto w-auto flex flex-row items-center"
         >
           <Image
-            src="/Next.png"
+            src="/kshlogo.png"
             alt="logo"
-            width={50}
-            height={50}
+            width={60}
+            height={60}
             className="cursor-pointer hover:animate-slowspin"
           />
 
